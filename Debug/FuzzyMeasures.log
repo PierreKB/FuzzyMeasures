@@ -1,0 +1,13 @@
+﻿  FuzzyMeasure.cpp
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(24,19): warning C4244: 'argument' : conversion de 'double' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=uint
+          ]
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(58,20): warning C4018: '<=' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(70,20): warning C4305: 'initialisation' : troncation de 'double' à 'float'
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(70,33): warning C4305: 'initialisation' : troncation de 'double' à 'float'
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(92,20): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(101,21): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(136,23): warning C4018: '<' : incompatibilité signed/unsigned
+  FuzzyMeasures.vcxproj -> C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\Debug\FuzzyMeasures.exe
