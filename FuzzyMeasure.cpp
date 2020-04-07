@@ -6,6 +6,7 @@
 #include <algorithm>
 
 FuzzyMeasure::FuzzyMeasure()
+	:m_errorMax(-1.0f)
 {}
 
 
@@ -53,7 +54,7 @@ float FuzzyMeasure::ChoquetIntegral(std::unordered_map<uint, float>& coeffs,
 
 	std::sort(sortedValues.begin(), sortedValues.end());
 
-	float choquet = 0;
+	float choquet = 0.0f;
 
 	for (int i = 1; i <= values.size(); ++i)
 	{
@@ -65,19 +66,156 @@ float FuzzyMeasure::ChoquetIntegral(std::unordered_map<uint, float>& coeffs,
 	return choquet;
 }
 
-void FuzzyMeasure::FindFuzzyMeasures(int iterationNumber)
+void FuzzyMeasure::FindFuzzyMeasuresUntil(int iterationNumber, std::vector<float>& errors, float alpha)
 {
-	float alpha = 0.15, beta = 0.15, errorMax = 0;
-	uint nodesNumber = m_space.powerset().size();
+	std::vector<uint> unmodified;
 
+	InitMeasureCoefficients(unmodified);
+	ComputeErrorMax();
+
+	for (int n = 0; n < iterationNumber; ++n)
+	{
+		FindFuzzyMeasures(errors, alpha);
+	}
+}
+
+void FuzzyMeasure::FindFuzzyMeasuresUntil(float errorLimit, std::vector<float>& errors, float alpha)
+{
+	float limit = INFINITY;
+
+	std::vector<uint> unmodified;
+
+	InitMeasureCoefficients(unmodified);
+	ComputeErrorMax();
+
+
+	while(limit > errorLimit)
+	{
+		FindFuzzyMeasures(errors, alpha);
+
+		limit = errors.back();
+	}
+}
+
+void FuzzyMeasure::FindFuzzyMeasures(std::vector<float>& errors, float alpha)
+{
 	auto lowerNeighbors = m_space.lowerNeighbors();
 	auto upperNeighbors = m_space.upperNeighbors();
 
 	std::vector<uint> path;
 	std::vector<float> sortedValues;
-	std::vector<float> errors;
 
-	std::vector<uint> unmodified;
+	float MSE = 0.0f;
+	
+	for (int i = 0; i < m_sampleVariablesValues.size(); ++i)
+	{
+		path.clear();
+		sortedValues.clear();
+
+		float error = ChoquetIntegral(m_coefficients, m_sampleVariablesValues[i], path, sortedValues) - m_sampleChoquetIntegral[i];
+		MSE += pow(error, 2);
+
+		if (error > 0)
+		{
+			int j = 1;
+
+			for (int p = path.size() - 2; p > 0; --p)
+			{
+				m_coefficients[path[p]] = m_coefficients[path[p]] - ( alpha * (error / m_errorMax) * (sortedValues[(sortedValues.size() - 1) - j] - sortedValues[(sortedValues.size() - 1) - j - 1]) );
+
+				for (auto ln : lowerNeighbors[path[p]])
+				{
+					if (m_coefficients[path[p]] < m_coefficients[ln])
+					{
+						m_coefficients[path[p]] = m_coefficients[ln];
+					}
+				}
+
+				++j;
+			}
+		}
+		else if (error < 0)
+		{
+			int j = path.size() - 2;
+
+			for (int p = 1; p < path.size() - 1; ++p)
+			{
+				m_coefficients[path[p]] = m_coefficients[path[p]] - (alpha * (error / m_errorMax) * (sortedValues[(sortedValues.size() - 1) - j] - sortedValues[(sortedValues.size() - 1) - j - 1]));
+
+				for (auto un : upperNeighbors[path[p]])
+				{
+					if (m_coefficients[path[p]] > m_coefficients[un])
+					{
+						m_coefficients[path[p]] = m_coefficients[un];
+					}
+				}
+
+				--j;
+			}
+		}
+	}
+
+	MSE /= m_sampleVariablesValues.size();
+	errors.push_back(MSE);
+}
+
+void FuzzyMeasure::ComputeImportanceIndex()
+{
+
+	std::vector<uint> A;
+
+	auto getA = [this](uint c, std::vector<uint>& A)
+	{
+		uint nc = ~c;
+		
+		for (auto set : m_space.powerset())
+		{
+			uint a = set.first & nc;
+			auto it = std::find(A.begin(), A.end(), a);
+
+			if(it == A.end()) { A.push_back(a); }
+		}
+	};
+	
+	
+	auto factorial = [](unsigned int n)
+	{
+		unsigned int f = 1;
+
+		for (unsigned int i = 1; i <= n; ++i)
+		{
+			f *= i;
+		}
+		return f;
+	};
+
+
+	for (uint i = 0; i < m_space.size(); ++i)
+	{
+		A.clear();
+		uint criterion = pow(2, i);
+
+		float ii = 0;
+		getA(criterion, A);
+
+		for (auto set : A)
+		{
+			float gamma = (float)( factorial(m_space.size() - utilities::numberOfSetBits(set) - 1) * factorial(utilities::numberOfSetBits(set)) ) / (float)factorial(m_space.size());
+
+			ii += gamma * (m_coefficients[set | criterion] - m_coefficients[set]);
+		}
+
+		m_importanceIndex[criterion] = ii;
+	}
+
+
+	//utilities::displayImportanceIndex(m_importanceIndex, m_space.powerset());
+	//utilities::printCoeff("coeffs4.txt", m_coefficients, m_space.powerset());
+}
+
+void FuzzyMeasure::InitMeasureCoefficients(std::vector<uint>& unmodified)
+{
+	uint nodesNumber = m_space.powerset().size();
 
 	m_coefficients.reserve(nodesNumber);
 	unmodified.reserve(nodesNumber);
@@ -88,148 +226,74 @@ void FuzzyMeasure::FindFuzzyMeasures(int iterationNumber)
 
 		if (i != 0) { unmodified.push_back(i); }
 	}
+}
+
+void FuzzyMeasure::ComputeErrorMax()
+{
+	if (m_errorMax != -1.0f) { return; }
+
+	m_errorMax = 0.0f;
+
+	std::vector<uint> path;
+	std::vector<float> sortedValues;
 
 	for (int i = 0; i < m_sampleVariablesValues.size(); ++i)
 	{
-		errorMax += pow(ChoquetIntegral(m_coefficients, m_sampleVariablesValues[i], path, sortedValues) - m_sampleChoquetIntegral[i], 2);
+		path.clear();
+		sortedValues.clear();
+
+		m_errorMax += pow(ChoquetIntegral(m_coefficients, m_sampleVariablesValues[i], path, sortedValues) - m_sampleChoquetIntegral[i], 2);
 	}
 
-	errorMax /= m_sampleVariablesValues.size();
+	m_errorMax /= m_sampleVariablesValues.size();
 
-	for (int n = 0; n < iterationNumber; ++n)
-	{
-		for (int i = 0; i < m_sampleVariablesValues.size(); ++i)
-		{
-			path.clear();
-			sortedValues.clear();
+	if (m_errorMax == 0.0f) { m_errorMax = 0.000001f; }
 
-			float error = ChoquetIntegral(m_coefficients, m_sampleVariablesValues[i], path, sortedValues) - m_sampleChoquetIntegral[i];
-			errors.push_back(error);
-
-			if (error > 0)
-			{
-				for (int p = path.size() - 2; p > 0; --p)
-				{
-					int j = 1;
-					m_coefficients[path[p]] = m_coefficients[path[p]] - (alpha * (error / errorMax) * (sortedValues[m_space.size() - j] - sortedValues[m_space.size() - j - 1]));
-
-					unmodified.erase(std::remove(unmodified.begin(), unmodified.end(), path[p]), unmodified.end());
-
-					for (auto ln : lowerNeighbors[path[p]])
-					{
-						if (m_coefficients[path[p]] < m_coefficients[ln])
-						{
-							m_coefficients[path[p]] = m_coefficients[ln];
-						}
-					}
-
-					/*if (m_coefficients[path[p]] < m_coefficients[path[p + 1]])
-					{
-						m_coefficients[path[p]] = m_coefficients[path[p + 1]];
-					}*/
-
-					++j;
-				}
-			}
-			else if (error < 0)
-			{
-				for (int p = 1; p < path.size() - 1; ++p)
-				{
-					int j = m_space.size() - 1;
-					m_coefficients[path[p]] = m_coefficients[path[p]] - (alpha * (error / errorMax) * (sortedValues[m_space.size() - j] - sortedValues[m_space.size() - j - 1]));
-
-					unmodified.erase(std::remove(unmodified.begin(), unmodified.end(), path[p]), unmodified.end());
-
-					for (auto un : upperNeighbors[path[p]])
-					{
-						if (m_coefficients[path[p]] > m_coefficients[un])
-						{
-							m_coefficients[path[p]] = m_coefficients[un];
-						}
-					}
-
-					--j;
-				}
-			}
-		}
-	}
-
-	utilities::printCoeff("coeffs.txt", m_coefficients, m_space.powerset());
-
-	/*if (!unmodified.empty())
-	{
-		std::sort(unmodified.begin(), unmodified.end(),
-			[](uint set1, uint set2) -> bool { return utilities::numberOfSetBits(set1) < utilities::numberOfSetBits(set2); });
-
-		for (auto um : unmodified)
-		{
-
-			for (auto ln : lowerNeighbors[um])
-			{
-				if (m_coefficients[um] < m_coefficients[ln])
-				{
-					m_coefficients[um] = m_coefficients[ln];
-				}
-			}
-
-			for (auto un : upperNeighbors[um])
-			{
-				if (m_coefficients[um] > m_coefficients[un])
-				{
-					m_coefficients[um] = m_coefficients[un];
-				}
-			}
-		}
-
-		for (auto um : unmodified)
-		{
-			std::vector<uint> lowerneigh;
-
-
-			float upperMean = 0, lowerMean = 0, upperMinDist = INFINITY, lowerMinDist = INFINITY, t = 0;
-
-			for (auto un : upperNeighbors[um])
-			{
-				upperMean += m_coefficients[un];
-				upperMinDist = abs(m_coefficients[um] - m_coefficients[un]) < upperMinDist ? abs(m_coefficients[um] - m_coefficients[un]) : upperMinDist;
-				++t;
-			}
-
-			upperMean /= t;
-			t = 0;
-
-			for (auto ln : lowerNeighbors[um])
-			{
-				lowerMean += m_coefficients[ln];
-				lowerMinDist = abs(m_coefficients[um] - m_coefficients[ln]) < lowerMinDist ? abs(m_coefficients[um] - m_coefficients[ln]) : lowerMinDist;
-				++t;
-			}
-
-			lowerMean /= t;
-
-			float key = upperMean + lowerMean - (2 * m_coefficients[um]);
-
-			if (key > 0)
-			{
-				m_coefficients[um] = m_coefficients[um] + ( beta * ( (key * upperMinDist) / (2 * (upperMean + lowerMean)) ) );
-			}
-			else if (key < 0)
-			{
-				m_coefficients[um] = m_coefficients[um] + (beta * ((key * lowerMinDist) / (2 * (upperMean + lowerMean))));
-			}
-		}
-	}*/
+	std::cout << "errorMax: " << m_errorMax << std::endl;
 }
 
 void FuzzyMeasure::ReadVariablesValuesFromFile(const std::string& filename)
 {
 	std::vector<std::string> variables;
-	
+
 	m_fileManager.ReadVariablesValues(filename, variables, m_sampleVariablesValues, m_sampleChoquetIntegral);
 	m_space.Init(variables);
 
 	//utilities::displayNeighborhood(m_space);
 }
+
+void FuzzyMeasure::CheckLatticeMonotocy()
+{
+	std::vector<std::pair<uint, uint>> involved;
+
+	for (auto& node : m_space.upperNeighbors())
+	{
+		for (auto set : node.second)
+		{
+			if (m_coefficients[node.first] > m_coefficients[set])
+			{
+				involved.emplace_back(node.first, set);
+			}
+		}
+	}
+
+	if (!involved.empty())
+	{
+		auto powerset = m_space.powerset();
+
+		std::cout << "Monotocy breaked! Node involved: " << std::endl;
+
+		for (auto& node : involved)
+		{
+			std::cout << "u({" << powerset[node.first] << "}) = " << m_coefficients[node.first]
+				<< " and "
+				<< "u({" << powerset[node.second] << "}) = " << m_coefficients[node.second]
+				<< std::endl;
+		}
+	}
+	else { std::cout << "No error found!" << std::endl; }
+}
+
 
 void FuzzyMeasure::ComputeLattice()
 {
@@ -246,48 +310,8 @@ void FuzzyMeasure::ComputeLattice()
 	}
 }
 
-
-void FuzzyMeasure::DisplayLattice()
-{
-	auto powerset = m_space.powerset();
-	auto diagram = m_space.hasseDiagram();
-
-	std::cout << "----Display the lattice with subset and value----" << std::endl;
-	std::cout << "" << std::endl;
-
-	for (auto set : powerset)
-	{
-		std::cout << "Node: u({" << powerset[set.first] << "}) (value = " << m_coefficients[set.first] << ") ----> children: ";
-
-		for (auto child : diagram[set.first])
-		{
-			std::cout << "u({" << powerset[child] << "}) (value = " << m_coefficients[child] << "), ";
-		}
-
-		std::cout << "" << std::endl;
-	}
-
-	std::cout << "" << std::endl;
-	std::cout << "" << std::endl;
-
-
-	std::cout << "----Display the lattice with value only----" << std::endl;
-	std::cout << "" << std::endl;
-
-	for (auto node : m_lattice)
-	{
-		std::cout << "Node: " << node.first << " ----> children: ";
-
-		for (auto child : node.second)
-		{
-			std::cout << child << ", ";
-		}
-
-		std::cout << "" << std::endl;
-	}
-}
-
-
 std::unordered_map<uint, float> FuzzyMeasure::coefficients() { return m_coefficients; }
+
+std::unordered_map<uint, float> FuzzyMeasure::importanceIndex() { return m_importanceIndex; }
 
 FuzzyMeasureSpace FuzzyMeasure::space() { return m_space; }

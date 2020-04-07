@@ -96,5 +96,56 @@ public:
 		file.close();
 	}
 
+
+	static void displayImportanceIndex(std::unordered_map<uint, float>& mii, std::unordered_map<uint, std::string>& powerset)
+	{
+		std::cout << "Importance index * " << mii.size() << " :" << std::endl;
+
+		for (auto& ii : mii)
+		{
+			std::cout << "n(" << powerset[ii.first] << ") = " << ii.second * mii.size() << std::endl;
+		}
+	}
+
+	static void printErrorInCSV(const std::string& filename, std::vector<float> errors, std::unordered_map<uint, std::string>& powerset)
+	{
+		std::fstream file(filename, std::fstream::out | std::fstream::app);
+
+		if (file.is_open())
+		{
+			int i = 1;
+			file << "Iteration;Error" << std::endl;
+
+			for (auto& error : errors)
+			{
+				file << i << ";" << error << std::endl;
+				++i;
+			}
+
+			file << std::endl;
+		}
+		else { std::cout << "Unable to open " << filename << std::endl; }
+
+		file.close();
+	}
+
+	static void printImportanceIndexInCSV(const std::string& filename, std::unordered_map<uint, float> mii, std::unordered_map<uint, std::string>& powerset)
+	{
+		std::fstream file(filename, std::fstream::out | std::fstream::app);
+
+		if (file.is_open())
+		{
+			file << "Importance index;Value" << std::endl;
+
+			for (auto& ii : mii)
+			{
+				file << "o(" << powerset[ii.first] << ");" << ii.second * mii.size() << std::endl;
+			}
+		}
+		else { std::cout << "Unable to open " << filename << std::endl; }
+
+		file.close();
+	}
+
 private:
 };

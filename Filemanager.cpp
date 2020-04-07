@@ -73,34 +73,6 @@ void FileManager::ReadVariablesValues(const std::string& filename,
 			++j;
 
 		}
-
-		/*for (auto var : variables)
-		{
-			std::cout << var << " ";
-		}
-		std::cout << std::endl;
-		std::cout << std::endl;
-
-		for (auto valvec : values)
-		{
-			for (auto val : valvec)
-			{
-				std::cout << val.second << " ";
-			}
-			std::cout << std::endl;
-		}
-
-		std::cout << std::endl;
-		std::cout << std::endl;
-
-		std::cout << "Integral value" << std::endl;
-
-		for (auto ci : choquetIntegral)
-		{
-			std::cout << ci << " ";
-		}*/
-
-
 	}
 	else { std::cout << "Unable to open " << filename << std::endl; }
 
