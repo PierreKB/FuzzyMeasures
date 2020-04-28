@@ -1,0 +1,39 @@
+﻿  Filemanager.cpp
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(93,17): warning C4244: 'initialisation' : conversion de '_Rep' en 'unsigned int', perte possible de données
+          with
+          [
+              _Rep=std::chrono::system_clock::rep
+          ]
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(97,87): warning C4267: 'argument' : conversion de 'size_t' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=unsigned int
+          ]
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(544,18): warning C4244: 'initialisation' : conversion de '_Rep' en 'unsigned int', perte possible de données
+          with
+          [
+              _Rep=std::chrono::system_clock::rep
+          ]
+  FuzzyMeasure.cpp
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(66,19): warning C4244: 'initialisation' : conversion de '_Rep' en 'unsigned int', perte possible de données
+          with
+          [
+              _Rep=std::chrono::system_clock::rep
+          ]
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(100,57): warning C4267: 'initialisation' : conversion de 'size_t' en 'unsigned int', perte possible de données
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(117,57): warning C4267: 'initialisation' : conversion de 'size_t' en 'unsigned int', perte possible de données
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(198,42): warning C4267: 'initialisation' : conversion de 'size_t' en 'BINSETREP', perte possible de données
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(217,27): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(356,23): warning C4244: 'initialisation' : conversion de 'double' en 'BINSETREP', perte possible de données
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(363,81): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\FuzzyMeasure.cpp(363,155): warning C4267: 'argument' : conversion de 'size_t' en 'unsigned int', perte possible de données
+  Universe.cpp
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Universe.cpp(12,25): warning C4244: '=' : conversion de 'double' en 'unsigned int', perte possible de données
+  main.cpp
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\main.cpp(20,21): warning C4305: '=' : troncation de 'double' à 'float'
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\main.cpp(21,20): warning C4305: '=' : troncation de 'double' à 'float'
+  Génération de code en cours
+  Previous IPDB not found, fall back to full compilation.
+  All 1685 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Fin de la génération du code
+  FuzzyMeasures.vcxproj -> C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\x64\Release\FuzzyMeasures.exe

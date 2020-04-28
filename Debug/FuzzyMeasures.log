@@ -1,4 +1,25 @@
-﻿  main.cpp
-C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\main.cpp(15,55): warning C4305: 'argument' : troncation de 'double' à 'float'
-C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\main.cpp(27,53): warning C4305: 'argument' : troncation de 'double' à 'float'
+﻿  Filemanager.cpp
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(63,11): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(85,8): warning C4018: '>' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(91,20): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(93,17): warning C4244: 'initialisation' : conversion de '_Rep' en 'unsigned int', perte possible de données
+          with
+          [
+              _Rep=std::chrono::system_clock::rep
+          ]
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(308,22): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(395,22): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(457,22): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(461,23): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(470,11): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(498,22): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(515,21): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(528,21): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(544,18): warning C4244: 'initialisation' : conversion de '_Rep' en 'unsigned int', perte possible de données
+          with
+          [
+              _Rep=std::chrono::system_clock::rep
+          ]
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(569,22): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\FuzzyMeasures\Filemanager.cpp(573,11): warning C4018: '<' : incompatibilité signed/unsigned
   FuzzyMeasures.vcxproj -> C:\Users\pierr\Desktop\M1 VMI\Projet tuteuré\FuzzyMeasures\Debug\FuzzyMeasures.exe

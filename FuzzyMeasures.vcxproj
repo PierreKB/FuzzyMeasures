@@ -19,15 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BINSETREP.h" />
+    <ClInclude Include="EVALUATION_DATA.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FuzzyMeasure.h" />
-    <ClInclude Include="FuzzyMeasureSpace.h" />
-    <ClInclude Include="utilities.h" />
+    <ClInclude Include="LEARNING_DATA.h" />
+    <ClInclude Include="PARAMS.h" />
+    <ClInclude Include="Universe.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Filemanager.cpp" />
     <ClCompile Include="FuzzyMeasure.cpp" />
-    <ClCompile Include="FuzzyMeasureSpace.cpp" />
+    <ClCompile Include="Universe.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

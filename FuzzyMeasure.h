@@ -1,51 +1,57 @@
-#pragma once
-#include "FuzzyMeasureSpace.h"
-#include "FileManager.h"
+#ifndef FUZZY_MEASURE_H
+#define FUZZY_MEASURE_H
+
+#include "Universe.h"
+#include "LEARNING_DATA.h"
+#include "PARAMS.h"
 
 class FuzzyMeasure
 {
 public:
-	FuzzyMeasure();
+	FuzzyMeasure(LEARNING_DATA& data);
+	FuzzyMeasure(std::vector<std::string>& elements, std::unordered_map<BINSETREP, float>& coefficients);
+
 	~FuzzyMeasure();
 
-	float ChoquetIntegral(std::unordered_map<uint, float>& m_coeffs, 
-		std::map<uint, float>& values, 
-		std::vector<uint>& path, 
-		std::vector<float>& sortedValues);
+	float ChoquetIntegral(
+		std::unordered_map<BINSETREP, float>& m_coeffs,
+		std::map<BINSETREP, float>& values,
+		std::vector<BINSETREP>& path,
+		std::vector<float>& sortedValues
+		);
 
-	void FindFuzzyMeasuresUntil(int iterationNumber, std::vector<float>& errors, float alpha = 1);
-	void FindFuzzyMeasuresUntil(float errorLimit, std::vector<float>& errors, float alpha = 1);
+	void FindFuzzyMeasuresUntil(int iterationNumber, std::vector<float>& errors, PARAMS params = PARAMS());
+	void FindFuzzyMeasuresUntil(float errorLimit, int iterationLimit, std::vector<float>& errors, PARAMS params = PARAMS());
 
-	void FindFuzzyMeasures(std::vector<float>& errors, float alpha);
+	void Evaluate(LEARNING_DATA& data, std::vector<float>& output);
+
 	void ComputeImportanceIndex();
+
+	Universe universe();
+
+	std::unordered_map<BINSETREP, float> coefficients();
+	std::unordered_map<BINSETREP, float> importanceIndex();
 
 	void CheckLatticeMonotocy();
 
-	void ReadVariablesValuesFromFile(const std::string& filename);
-
-
-	FuzzyMeasureSpace space();
-	std::unordered_map<uint, float> coefficients();
-	std::unordered_map<uint, float> importanceIndex();
-
 
 private:
-	void InitMeasureCoefficients(std::vector<uint>& unmodified);
+	void InitMeasure();
+	void Reset();
+
+	void FindFuzzyMeasures(std::vector<float>& errors, float alpha, float beta);
+	void AjustUnmodifiedNodes(float beta);
+
 	void ComputeErrorMax();
 
-	void ComputeLattice();
+	std::unordered_map<BINSETREP, float> coefficients_;
+	std::unordered_map<BINSETREP, float> importanceIndex_;
 
-	std::unordered_map<float, std::vector<float>> m_lattice;
-	std::unordered_map<uint, float> m_coefficients;
-	std::unordered_map<uint, float> m_importanceIndex;
+	Universe universe_;
+	LEARNING_DATA data_;
 
-
-	std::vector<std::map<uint, float>> m_sampleVariablesValues;
-	std::vector<float> m_sampleChoquetIntegral;
-
-	FuzzyMeasureSpace m_space;
-	FileManager m_fileManager;
-
-
-	float m_errorMax;
+	std::vector<BINSETREP> unmodified_;
+	float errorMax_;
 };
+
+#endif
