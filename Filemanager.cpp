@@ -530,7 +530,7 @@ void FileManager::PrintResume(const std::string& filename, EVALUATION_DATA& eval
 			auto it = std::min_element(evaluationData.errors[i].begin(), evaluationData.errors[i].end());
 
 			file << "'k" + std::to_string(i + 1) + "E': 'Erreur minimale = " + std::to_string(*it);
-			file << "<br/> iteration n&#176; " + std::to_string(abs(it - evaluationData.errors[i].end())) + "', \n";
+			file << "<br/> iteration n&#176; " + std::to_string(abs(it - evaluationData.errors[i].begin())) + "', \n";
 		}
 
 		file << "} \n ] \n";
@@ -562,7 +562,7 @@ void FileManager::PrintResume(const std::string& filename, EVALUATION_DATA& eval
 		for (int i = 0; i < evaluationData.k; ++i)
 		{
 			std::string color = "'rgba(" + std::to_string(rand(0, 255)) + ", " + std::to_string(rand(0, 255)) + ", " + std::to_string(rand(0, 255)) + ")'";
-			file << "{ \n label: '" + std::to_string(i) + "', \n";
+			file << "{ \n label: '" + std::to_string(i + 1) + "', \n";
 			file << "backgroudColor: " + color + ", \n";
 			file << "borderColor: " + color + ", \n";
 
